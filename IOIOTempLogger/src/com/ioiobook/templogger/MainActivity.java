@@ -39,6 +39,9 @@ import android.widget.ToggleButton;
 public class MainActivity extends AbstractIOIOActivity implements OnCheckedChangeListener {
 	
 	private final static long SAMPLE_PERIOD = 10000; // 10 seconds
+	private static final int PLUS_PIN = 44;
+	private static final int GND_PIN = 46;
+	private static final int INPUT_PIN = 45;	
 	
 	private TextView temperature_;
 	private RadioButton radioF_;
@@ -85,9 +88,9 @@ public class MainActivity extends AbstractIOIOActivity implements OnCheckedChang
 		 */
 		@Override
 		protected void setup() throws ConnectionLostException {
-			gndPin_ = ioio_.openDigitalOutput(46, Mode.NORMAL, false); // gnd supply to temp sensor
-			plusPin_ = ioio_.openDigitalOutput(44, Mode.NORMAL, true); // positive supply to temp sensor
-			inputPin_ = ioio_.openAnalogInput(45);
+			gndPin_ = ioio_.openDigitalOutput(GND_PIN, Mode.NORMAL, false); // gnd supply to temp sensor
+			plusPin_ = ioio_.openDigitalOutput(PLUS_PIN, Mode.NORMAL, true); // positive supply to temp sensor
+			inputPin_ = ioio_.openAnalogInput(INPUT_PIN);
 		}
 
 		/**
