@@ -35,7 +35,10 @@ import android.widget.ToggleButton;
 
 public class MainActivity extends AbstractIOIOActivity implements OnCheckedChangeListener {
 	
-	public static final String PREFS_NAME = "IOIOIntruder";
+	private static final int PIR_PIN = 48;
+	private static final int LED_PIN = 0;
+	
+	private static final String PREFS_NAME = "IOIOIntruder";
 	private TextView sms_;
 	private TextView message_;
 	private ToggleButton testButton_;
@@ -88,8 +91,8 @@ public class MainActivity extends AbstractIOIOActivity implements OnCheckedChang
 		@Override
 		protected void setup() throws ConnectionLostException {
 			toast("HERE");
-			pir_ = ioio_.openDigitalInput(48, Mode.FLOATING);
-			led_ = ioio_.openDigitalOutput(0);
+			pir_ = ioio_.openDigitalInput(PIR_PIN, Mode.FLOATING);
+			led_ = ioio_.openDigitalOutput(LED_PIN);
 		}
 
 		/**
