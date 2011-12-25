@@ -14,6 +14,7 @@
 
 package com.ioiobook.matrix;
 
+import org.hermit.android.io.AudioReader;
 import ioio.lib.api.DigitalOutput;
 import ioio.lib.api.exception.ConnectionLostException;
 import ioio.lib.util.AbstractIOIOActivity;
@@ -26,19 +27,26 @@ import android.view.View.OnClickListener;
 import android.widget.Button;
 
 
+
 public class MainActivity extends AbstractIOIOActivity implements OnClickListener {
   
+	public final static int AUDIO_BUFFER_SIZE = 256;
+	public final static int F = 16000;
+	
     private Button test1Button_;
     private Button test2Button_;
     private Button test3Button_;
     private Button animationButton_;
     private Button spectrumButton_;
+    
+	private AudioReader audioReader_;
+	private SpectrumDrawer spectrumDrawer_;
 
     private final int IMAGE = 0;
     private final int ANIMATION = 1;
     private final int SPECTRUM = 2;
 
-    private int state_ = SPECTRUM;
+    private int state_ = ANIMATION;
     
 	private long lastFrameChange_ = 0;
 	private int lastFrame_ = 0;
@@ -53,8 +61,10 @@ public class MainActivity extends AbstractIOIOActivity implements OnClickListene
 	        {0,0,0,0,0,0,0,0},
 	        {0,0,0,0,0,0,0,0},
 	        {0,0,0,0,0,0,0,0},
-	        {2,2,2,2,2,2,2,2},
-	    };
+	        {0,0,0,0,0,0,0,0}
+	};
+
+
 	private int[][] testPattern1_ = {
         {1,1,1,1,1,1,1,1},
         {1,2,2,2,2,2,2,2},
@@ -67,14 +77,14 @@ public class MainActivity extends AbstractIOIOActivity implements OnClickListene
     };
     
 	private int[][] testPattern2_ = {
-        {3,3,3,3,3,3,3,3},
-        {3,3,3,3,3,3,3,3},
-        {3,3,3,3,3,3,3,3},
-        {3,3,3,3,3,3,3,3},
-        {3,3,3,3,3,3,3,3},
-        {3,3,3,3,3,3,3,3},
-        {3,3,3,3,3,3,3,3},
-        {3,3,3,3,3,3,3,3},
+	      {0,0,0,0,0,0,0,0},
+	      {0,0,1,1,1,1,0,0},
+	      {0,1,1,1,1,1,1,0},
+	      {1,1,2,1,1,2,1,1},
+	      {1,1,1,1,1,1,1,1},
+	      {0,0,3,0,0,3,0,0},
+	      {0,3,0,0,0,0,3,0},
+	      {0,0,3,0,0,3,0,0}
     };
 
 	private int[][] testPatternIOIO_ = {
@@ -106,7 +116,28 @@ public class MainActivity extends AbstractIOIOActivity implements OnClickListene
         animationButton_.setOnClickListener(this);
         spectrumButton_ = (Button)findViewById(R.id.spectrumButton);
         spectrumButton_.setOnClickListener(this);
-        display_ = spectrum_;
+        
+        display_ = testPattern2_;
+        
+        spectrumDrawer_ = new SpectrumDrawer(spectrum_);
+        
+        AudioReader.Listener listener = new AudioReader.Listener()
+		{
+
+			@Override
+			public void onReadComplete(short[] buffer) {
+				spectrumDrawer_.calculateSpectrum(buffer);
+			}
+
+			@Override
+			public void onReadError(int error) {
+				
+			}
+
+		};
+		audioReader_ = new AudioReader();
+		audioReader_.startReader(F, AUDIO_BUFFER_SIZE, listener);
+		Log.d("SRM", "HERE");
 	}
 
 	/**
@@ -166,7 +197,6 @@ public class MainActivity extends AbstractIOIOActivity implements OnClickListene
 			  refreshMatrix();
 		  }
 		  else if (state_ == SPECTRUM) {
-			  display_ = spectrum_;
 			  refreshMatrix();
 		  }
 		}
@@ -238,21 +268,22 @@ public class MainActivity extends AbstractIOIOActivity implements OnClickListene
   @Override
   public void onClick(View v) {
     if (v == test1Button_){
-      state_ = IMAGE;
       display_ = testPattern1_;
+      state_ = IMAGE;
     }
     else if (v == test2Button_) {
-      state_ = IMAGE;
       display_ = testPattern2_;
+      state_ = IMAGE;
     }
     else if (v == test3Button_) {
-      state_ = IMAGE;
       display_ = testPatternIOIO_;
+      state_ = IMAGE;
     }
     else if (v == animationButton_) {
         state_ = ANIMATION;
     }
     else if (v == spectrumButton_) {
+    	display_ = spectrum_;
     	state_ = SPECTRUM;
     }
   }
