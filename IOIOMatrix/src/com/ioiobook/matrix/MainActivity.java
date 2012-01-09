@@ -171,7 +171,6 @@ public class MainActivity extends AbstractIOIOActivity implements OnClickListene
 		 protected void setup() throws ConnectionLostException {
 			 for (int i = 0; i < 8; i++)
 			 {
-				 Log.d("SRM", "HERE");
 				 g[i] = ioio_.openDigitalOutput(greenPins[i]);
 				 r[i] = ioio_.openDigitalOutput(redPins[i]);
 				 cc[i] = ioio_.openDigitalOutput(ccPins[i]);
@@ -238,7 +237,6 @@ public class MainActivity extends AbstractIOIOActivity implements OnClickListene
 		 private void displayColumn(int col) throws ConnectionLostException {
 			 cc[col].write(true);
 			 for (int row = 0; row < 8; row++) {
-				 // make it smart to only write if its different from previous column state
 				 r[row].write((display_[col][row] & 1) > 0);
 				 g[row].write((display_[col][row] & 2) > 0);
 			 }

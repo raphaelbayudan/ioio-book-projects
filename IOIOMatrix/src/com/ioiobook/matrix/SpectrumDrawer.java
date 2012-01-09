@@ -32,7 +32,7 @@ public class SpectrumDrawer {
     // 128 values in average_ we just want 8 - Fn = n * Fs / N where Fn is freq
     // at
     // data point n, Fs is the sample freq and N is the buffer size
-    private final int[] frequencies_ = { 10, 20, 30, 40, 50, 60, 70, 80 };
+    private final int[] frequencies_ = { 2, 4, 6, 10, 15, 25, 55, 80 };
     private final int[] colors_ = { 2, 2, 3, 3, 3, 1, 1, 1 };
 
     public SpectrumDrawer(int[][] display) {
